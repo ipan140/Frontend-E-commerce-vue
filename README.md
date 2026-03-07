@@ -51,18 +51,6 @@ This project uses the following technologies:
 
 ---
 
-## 📂 Project Structure
-
-```
-src
- ├── assets
- ├── components
- ├── layout
- ├── pages
- ├── router
- ├── store
- └── App.vue
-```
 
 ---
 
