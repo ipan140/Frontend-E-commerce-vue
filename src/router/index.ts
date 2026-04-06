@@ -14,6 +14,33 @@ const router = createRouter({
         title: 'Home',
       },
     },
+    // --- RUTE DETAIL PRODUK ---
+    {
+      path: '/product/:id',
+      name: 'ProductDetail',
+      component: () => import('../components/landingpage/productDetail.vue'),
+      meta: {
+        title: 'Product Detail',
+      },
+    },
+    // --- TAMBAHKAN RUTE KERANJANG DI SINI ---
+    {
+      path: '/cart',
+      name: 'Cart',
+      component: () => import('../components/landingpage/cart.vue'),
+      meta: {
+        title: 'Shopping Cart',
+      },
+    },
+    {
+      path: '/notifications',
+      name: 'Notifications',
+      component: () => import('../components/landingpage/notifications.vue'),
+      meta: {
+        title: 'My Notifications',
+      },
+    },
+    // --------------------------------------------
     {
       path: '/dashboard',
       name: 'Ecommerce',
@@ -88,7 +115,6 @@ const router = createRouter({
         title: 'Badge',
       },
     },
-
     {
       path: '/buttons',
       name: 'Buttons',
@@ -97,7 +123,6 @@ const router = createRouter({
         title: 'Buttons',
       },
     },
-
     {
       path: '/images',
       name: 'Images',
@@ -122,7 +147,6 @@ const router = createRouter({
         title: 'Blank',
       },
     },
-
     {
       path: '/error-404',
       name: '404 Error',
@@ -131,7 +155,6 @@ const router = createRouter({
         title: '404 Error',
       },
     },
-
     {
       path: '/signin',
       name: 'Signin',
@@ -154,6 +177,7 @@ const router = createRouter({
 export default router
 
 router.beforeEach((to, from, next) => {
-  document.title = `Vue.js ${to.meta.title} | TailAdmin - Vue.js Tailwind CSS Dashboard Template`
+  const title = to.meta.title ? `${to.meta.title} | ` : ''
+  document.title = `${title}TailAdmin - Vue.js Tailwind CSS Dashboard Template`
   next()
 })
