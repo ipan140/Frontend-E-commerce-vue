@@ -171,7 +171,15 @@ const router = createRouter({
         title: 'Signup',
       },
     },
-{
+    {
+      path: '/faq',
+      name: 'FAQ',
+      component: () => import('../components/landingpage/FAQ/faq.vue'),
+      meta: {
+        title: 'FAQ',
+      },
+    },
+    {
       path: '/category',
       name: 'Category',
       component: () => import('../components/landingpage/Categoryshope/Categoryshope.vue'),
