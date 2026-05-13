@@ -4,41 +4,39 @@ import {
   Instagram,
   Linkedin,
   Twitter,
-  Youtube,
-  ShoppingBag,
-  ArrowRight,
-  Mail,
-  Phone,
-  MapPin,
-  Store
+  GraduationCap
 } from 'lucide-vue-next'
 
 const footerLinks = [
   {
-    title: 'Products',
+    title: 'Layanan Pelanggan',
     links: [
-      { name: 'Latest Arrivals', href: '#' },
-      { name: 'Best Sellers', href: '#' },
-      { name: 'Flash Sales', href: '#' },
-      { name: 'Gift Cards', href: '#' }
+      { name: 'Bantuan', href: '#' },
+      { name: 'Metode Pembayaran', href: '#' },
+      { name: 'TrendStorePay', href: '#' },
+      { name: 'Koin TrendStore', href: '#' },
+      { name: 'Lacak Pesanan Pembeli', href: '#' },
+      { name: 'Lacak Pengiriman Penjual', href: '#' },
+      { name: 'Gratis Ongkir', href: '#' },
+      { name: 'Pengembalian Barang & Dana', href: '#' },
+      { name: 'Garansi TrendStore', href: '#' },
+      { name: 'XTRA Aman', href: '#' },
+      { name: 'Hubungi Kami', href: '#' }
     ]
   },
   {
-    title: 'Company',
+    title: 'Jelajahi TrendStore',
     links: [
-      { name: 'About Us', href: '#' },
-      { name: 'Careers', href: '#' },
-      { name: 'Press & Media', href: '#' },
-      { name: 'Sustainability', href: '#' }
-    ]
-  },
-  {
-    title: 'Support',
-    links: [
-      { name: 'Help Center', href: '#' },
-      { name: 'Track Order', href: '#' },
-      { name: 'Returns & Refunds', href: '#' },
-      { name: 'Contact Us', href: '#' }
+      { name: 'Tentang Kami', href: '#' },
+      { name: 'Karir', href: '#' },
+      { name: 'Kebijakan', href: '#' },
+      { name: 'Kebijakan Privasi TrendStore', href: '#' },
+      { name: 'Blog', href: '#' },
+      { name: 'TrendStore Mall', href: '#' },
+      { name: 'Seller Centre', href: '#' },
+      { name: 'Flash Sale', href: '#' },
+      { name: 'Kontak Media', href: '#' },
+      { name: 'TrendStore Affiliate', href: '#' }
     ]
   }
 ]
@@ -47,85 +45,141 @@ const socials = [
   { icon: Facebook, href: '#', name: 'Facebook' },
   { icon: Instagram, href: '#', name: 'Instagram' },
   { icon: Twitter, href: '#', name: 'Twitter' },
-  { icon: Linkedin, href: '#', name: 'Linkedin' },
-  { icon: Youtube, href: '#', name: 'Youtube' }
+  { icon: Linkedin, href: '#', name: 'LinkedIn' },
+  { icon: GraduationCap, href: '#', name: 'Kampus TrendStore' }
+]
+
+// Placeholder arrays for grids
+const payments = [
+  'Alfamart', 'Alfamidi', 'Amex', 'BCA', 'BNI', 'BRI', 
+  'BSI', 'CIMB', 'Dan Dan', 'Indomaret', 'JCB', 'Mandiri', 
+  'Mastercard', 'Permata', 'SeaBank', 'SPay', 'VISA'
+]
+
+const shippings = [
+  'Anteraja', 'Bluebird', 'GoSend', 'Grab', 'ID Express', 'Indo Paket', 
+  'JNE', 'J&T', 'Ninja', 'Pos', 'Sentral', 'SiCepat', 'SPX'
 ]
 </script>
 
 <template>
-  <footer class="bg-white dark:bg-gray-900 pt-20 pb-10 border-t border-gray-100 dark:border-gray-800 transition-colors duration-300">
-    <div class="max-w-[1440px] mx-auto px-6 md:px-10 lg:px-12">
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-20">
+  <footer class="bg-white dark:bg-gray-900 pt-12 pb-10 border-t border-gray-200 dark:border-gray-800 transition-colors duration-300 font-sans">
+    <div class="max-w-[1200px] mx-auto px-4 md:px-8">
+      
+      <!-- 5-Column Grid Layout -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-10">
         
-        <!-- Column 1: Brand & About -->
-        <div class="space-y-8">
-          <div class="flex items-center gap-3 active:scale-95 transition-transform cursor-pointer">
-            <div class="h-10 w-10 flex items-center justify-center rounded-xl bg-brand-500 text-white shadow-lg shadow-brand-500/20">
-              <Store :size="20" />
-            </div>
-            <span class="text-2xl font-black tracking-tight text-gray-900 dark:text-white uppercase italic">TrendStore</span>
-          </div>
-          <p class="text-gray-500 dark:text-gray-400 text-sm leading-relaxed max-w-xs font-medium">
-            Elevate your shopping experience with curated premium collections and seamless marketplace solutions. Join the future of digital retail today.
-          </p>
-          <div class="flex items-center gap-3">
-            <a 
-              v-for="social in socials" 
-              :key="social.name" 
-              :href="social.href"
-              class="h-10 w-10 flex items-center justify-center rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-gray-800 text-gray-400 hover:text-brand-500 dark:hover:text-white transition-all hover:scale-110 shadow-theme-xs"
-            >
-              <component :is="social.icon" :size="18" />
-            </a>
-          </div>
-        </div>
-
-        <!-- Columns 2-4: Links -->
-        <div v-for="column in footerLinks" :key="column.title" class="space-y-8">
-          <h4 class="text-sm font-black uppercase tracking-widest text-gray-900 dark:text-white">{{ column.title }}</h4>
-          <ul class="space-y-4">
+        <!-- Column 1 & 2: Text Links -->
+        <div v-for="column in footerLinks" :key="column.title" class="space-y-4">
+          <h4 class="text-sm font-bold text-gray-800 dark:text-gray-100">{{ column.title }}</h4>
+          <ul class="space-y-2.5">
             <li v-for="link in column.links" :key="link.name">
               <a 
                 :href="link.href" 
-                class="text-gray-500 dark:text-gray-400 text-sm font-bold hover:text-brand-500 dark:hover:text-white transition-colors flex items-center group"
+                class="text-gray-500 dark:text-gray-400 text-[13px] hover:text-brand-500 dark:hover:text-white transition-colors"
               >
                 {{ link.name }}
-                <ArrowRight :size="14" class="ml-2 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300" />
               </a>
             </li>
           </ul>
         </div>
-      </div>
 
-      <!-- Bottom Bar: Newsletter & Copyright -->
-      <div class="pt-10 border-t border-gray-100 dark:border-gray-800">
-        <div class="flex flex-col lg:flex-row items-center justify-between gap-8">
-          <!-- Contact Info -->
-          <div class="flex flex-wrap justify-center lg:justify-start gap-x-8 gap-y-4">
-            <div class="flex items-center gap-2 text-xs font-bold text-gray-500 dark:text-gray-400">
-              <Mail :size="14" class="text-brand-500" />
-              hello@trendstore.com
-            </div>
-            <div class="flex items-center gap-2 text-xs font-bold text-gray-500 dark:text-gray-400">
-              <Phone :size="14" class="text-brand-500" />
-              +62 21 555 1234
-            </div>
-            <div class="flex items-center gap-2 text-xs font-bold text-gray-500 dark:text-gray-400">
-              <MapPin :size="14" class="text-brand-500" />
-              Jakarta, Indonesia
+        <!-- Column 3: Payment & Logistics -->
+        <div class="space-y-6">
+          <div>
+            <h4 class="text-sm font-bold text-gray-800 dark:text-gray-100 mb-4">Pembayaran</h4>
+            <div class="flex flex-wrap gap-2">
+              <!-- Placeholder for Payment Logos -->
+              <div 
+                v-for="pay in payments" 
+                :key="pay"
+                class="h-7 px-2 flex items-center justify-center bg-white border border-gray-200 rounded text-[10px] text-gray-500 shadow-sm"
+              >
+                {{ pay }}
+              </div>
             </div>
           </div>
-
-          <!-- Copyright & Secondary Links -->
-          <div class="flex flex-col items-center lg:items-end gap-3">
-            <div class="flex flex-wrap justify-center lg:justify-end gap-x-6 gap-y-2">
-              <a v-for="item in ['Privacy Policy', 'Terms of Service', 'Cookie Policy']" :key="item" href="#" class="text-[10px] font-black uppercase tracking-widest text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
-                {{ item }}
-              </a>
+          
+          <div>
+            <h4 class="text-sm font-bold text-gray-800 dark:text-gray-100 mb-4">Pengiriman</h4>
+            <div class="flex flex-wrap gap-2">
+              <!-- Placeholder for Shipping Logos -->
+              <div 
+                v-for="ship in shippings" 
+                :key="ship"
+                class="h-7 px-2 flex items-center justify-center bg-white border border-gray-200 rounded text-[10px] text-gray-500 shadow-sm"
+              >
+                {{ ship }}
+              </div>
             </div>
-            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
-              © 2024 TrendStore Marketplace. All Rights Reserved.
-            </p>
+          </div>
+        </div>
+
+        <!-- Column 4: Socials & Security -->
+        <div class="space-y-6">
+          <div>
+            <h4 class="text-sm font-bold text-gray-800 dark:text-gray-100 mb-4">Ikuti Kami</h4>
+            <ul class="space-y-3">
+              <li v-for="social in socials" :key="social.name">
+                <a :href="social.href" class="flex items-center gap-2 text-gray-500 dark:text-gray-400 hover:text-brand-500 dark:hover:text-white transition-colors text-[13px]">
+                  <div class="h-6 w-6 flex items-center justify-center rounded-full bg-gray-600 text-white dark:bg-white/10 dark:text-gray-300">
+                    <component :is="social.icon" :size="12" fill="currentColor" v-if="social.name !== 'Kampus TrendStore'"/>
+                    <component :is="social.icon" :size="12" v-else/>
+                  </div>
+                  {{ social.name }}
+                </a>
+              </li>
+            </ul>
+          </div>
+          
+          <div>
+            <h4 class="text-sm font-bold text-gray-800 dark:text-gray-100 mb-4">Keamanan</h4>
+            <!-- Placeholder for TUV Rheinland Logo -->
+            <div class="h-12 w-24 bg-gray-100 border border-gray-200 flex items-center justify-center rounded text-[10px] text-gray-500 font-bold p-1 text-center">
+              TÜV Rheinland Certified
+            </div>
+          </div>
+        </div>
+
+        <!-- Column 5: App Download -->
+        <div class="space-y-4">
+          <h4 class="text-sm font-bold text-gray-800 dark:text-gray-100">Download Aplikasi TrendStore</h4>
+          <div class="flex items-start gap-3">
+            <!-- QR Code Placeholder -->
+            <div class="w-[88px] h-[88px] bg-white border border-gray-200 p-1 rounded shadow-sm flex items-center justify-center">
+              <div class="w-full h-full bg-gray-200 grid place-items-center text-[10px] text-gray-500 text-center">QR Code</div>
+            </div>
+            
+            <!-- App Store Buttons Placeholders -->
+            <div class="flex flex-col gap-2">
+              <div class="h-7 px-3 bg-white border border-gray-200 flex items-center justify-center rounded text-[10px] text-gray-600 shadow-sm w-24">
+                App Store
+              </div>
+              <div class="h-7 px-3 bg-white border border-gray-200 flex items-center justify-center rounded text-[10px] text-gray-600 shadow-sm w-24">
+                Google Play
+              </div>
+              <div class="h-7 px-3 bg-white border border-gray-200 flex items-center justify-center rounded text-[10px] text-gray-600 shadow-sm w-24">
+                AppGallery
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Bottom Divider -->
+      <div class="pt-6 border-t border-gray-200 dark:border-gray-800 flex justify-between items-center text-[13px] text-gray-500">
+        <p>© 2026 TrendStore. Hak Cipta Dilindungi.</p>
+        <div class="flex gap-4">
+          <span>Negara:</span>
+          <div class="flex gap-2">
+            <a href="#" class="hover:underline">Singapura</a>
+            <span class="border-l border-gray-300"></span>
+            <a href="#" class="hover:underline">Indonesia</a>
+            <span class="border-l border-gray-300"></span>
+            <a href="#" class="hover:underline">Taiwan</a>
+            <span class="border-l border-gray-300"></span>
+            <a href="#" class="hover:underline">Thailand</a>
           </div>
         </div>
       </div>
@@ -134,18 +188,7 @@ const socials = [
 </template>
 
 <style scoped>
-footer {
-  font-family: var(--font-outfit), sans-serif;
-}
-
-/* Custom color overrides since we avoid @apply for brand colors */
 .text-brand-500 {
-  color: var(--color-brand-500);
-}
-</style>
-
-<style scoped>
-footer {
-  line-height: normal;
+  color: #ee4d2d; 
 }
 </style>

@@ -135,7 +135,9 @@ onUnmounted(() => {
         desc="Explore our professional categories curated for high-performance lifestyles.">
         <div
           class="grid grid-cols-2 min-[400px]:grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-9 gap-3 md:gap-4">
-          <a v-for="cat in categories" :key="cat.name" href="#"
+
+          <!-- GANTI <a> menjadi <router-link> dan arahkan ke '/category' -->
+          <router-link v-for="cat in categories" :key="cat.name" to="/category"
             class="group flex flex-col items-center gap-3 md:gap-4 p-4 md:p-5 rounded-xl md:rounded-2xl border border-transparent hover:border-brand-500/20 hover:bg-white dark:hover:bg-white/5 hover:shadow-theme-md transition-all">
             <div :class="['flex h-12 w-12 md:h-14 md:w-14 items-center justify-center rounded-2xl md:rounded-[20px] transition-all group-hover:scale-110 shadow-theme-xs',
               cat.color === 'brand' ? 'bg-brand-50 text-brand-500' :
@@ -148,7 +150,8 @@ onUnmounted(() => {
             <span
               class="text-[10px] md:text-xs font-black uppercase tracking-wider text-gray-500 group-hover:text-brand-500 text-center">{{
                 cat.name }}</span>
-          </a>
+          </router-link>
+
         </div>
       </ComponentCard>
 
@@ -260,7 +263,7 @@ onUnmounted(() => {
             </div>
             <div class="space-y-1">
               <h4 class="text-xs md:text-sm font-bold text-gray-900 dark:text-white truncate">Pro Component Module {{ i
-              }}</h4>
+                }}</h4>
               <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
                 <span class="text-xs md:text-sm font-black text-gray-900 dark:text-white">$450.00</span>
                 <span class="text-[9px] md:text-[10px] font-bold text-gray-400 uppercase tracking-widest">2.1k

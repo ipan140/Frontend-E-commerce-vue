@@ -10,7 +10,8 @@ import {
   User,
   Store,
   Ticket,
-  PackageCheck
+  PackageCheck,
+  HelpCircle 
 } from 'lucide-vue-next'
 import ThemeToggler from '../../common/ThemeToggler.vue'
 
@@ -23,7 +24,6 @@ const toggleMobileMenu = () => {
 // Notification State
 const isNotifOpen = ref(false)
 
-// Fungsi toggle hanya untuk tampilan Mobile (karena di HP tidak ada hover)
 const toggleNotif = () => {
   isNotifOpen.value = !isNotifOpen.value
 }
@@ -101,6 +101,9 @@ const notifications = [
         </div>
 
         <div class="flex items-center gap-2 md:gap-4">
+
+
+
           <div class="hidden md:flex relative group mr-2">
             <Search :size="16"
               class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-brand-500 transition-colors" />
@@ -109,7 +112,11 @@ const notifications = [
           </div>
 
           <ThemeToggler />
-
+          <router-link to="/faq"
+            class="hidden md:flex items-center gap-1.5 px-2 text-gray-500 hover:text-brand-500 dark:text-gray-400 dark:hover:text-white transition-colors active:scale-95">
+            <HelpCircle :size="18" />
+            <!-- <span class="text-sm font-bold">Bantuan</span> -->
+          </router-link>
           <div class="relative hidden sm:block" @mouseenter="isNotifOpen = true" @mouseleave="isNotifOpen = false">
             <button
               :class="['relative flex h-9 w-9 md:h-10 md:w-10 items-center justify-center rounded-xl border transition-all active:scale-95',
@@ -161,7 +168,7 @@ const notifications = [
                           {{ notif.desc }}
                         </p>
                         <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{{ notif.time
-                        }}</span>
+                          }}</span>
                       </div>
                     </div>
                   </div>
@@ -227,6 +234,14 @@ const notifications = [
               @click="isMobileMenuOpen = false">
               {{ link.name }}
               <ChevronDown :size="16" class="-rotate-90 opacity-40" />
+            </router-link>
+
+            <!-- Tombol FAQ / Bantuan (Mobile) -->
+            <router-link to="/faq"
+              class="flex items-center gap-3 p-4 rounded-xl font-black text-gray-800 dark:text-gray-200 hover:bg-brand-50 hover:text-brand-500 dark:hover:bg-brand-500/5 transition-all text-sm uppercase tracking-wider"
+              @click="isMobileMenuOpen = false">
+              <HelpCircle :size="18" />
+              Bantuan (FAQ)
             </router-link>
 
             <button @click="toggleNotif"

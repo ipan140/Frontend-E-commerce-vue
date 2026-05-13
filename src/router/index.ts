@@ -171,6 +171,14 @@ const router = createRouter({
         title: 'Signup',
       },
     },
+{
+      path: '/category',
+      name: 'Category',
+      component: () => import('../components/landingpage/Categoryshope/Categoryshope.vue'),
+      meta: {
+        title: 'Kategori Produk',
+      },
+    },
   ],
 })
 
