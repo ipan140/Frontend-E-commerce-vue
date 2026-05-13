@@ -11,7 +11,10 @@ import {
   Store,
   Ticket,
   PackageCheck,
-  HelpCircle 
+  HelpCircle,
+  Home,
+  ShoppingBag,
+  Headphones
 } from 'lucide-vue-next'
 import ThemeToggler from '../../common/ThemeToggler.vue'
 
@@ -28,11 +31,11 @@ const toggleNotif = () => {
   isNotifOpen.value = !isNotifOpen.value
 }
 
+// NavLinks: Insights dihapus, icon untuk desktop dan mobile
 const navLinks = [
-  { name: 'Home', href: '/' },
-  { name: 'Products', href: '#' },
-  { name: 'Insights', href: '#' },
-  { name: 'Support', href: '#' }
+  { name: 'Home', href: '/', icon: Home },
+  { name: 'Products', href: '#', icon: ShoppingBag },
+  { name: 'Support', href: '#', icon: Headphones }
 ]
 
 // Dummy Notifications Data
@@ -87,22 +90,24 @@ const notifications = [
                 <Store :size="18" class="md:w-5 md:h-5" />
               </div>
               <span
-                class="text-lg md:text-xl font-black tracking-tight text-gray-900 dark:text-white uppercase italic hidden sm:block">TrendStore</span>
+                class="text-lg md:text-xl font-black tracking-tight text-gray-900 dark:text-white uppercase italic block">
+                TrendStore
+              </span>
             </router-link>
           </div>
 
+          <!-- DESKTOP NAV: Ditambahkan layout flex dan pemanggilan icon -->
           <nav class="hidden lg:flex items-center gap-8">
             <router-link v-for="link in navLinks" :key="link.name" :to="link.href"
-              class="text-sm font-bold text-gray-600 hover:text-brand-500 dark:text-gray-400 dark:hover:text-white transition-colors"
+              class="flex items-center gap-2 text-sm font-bold text-gray-600 hover:text-brand-500 dark:text-gray-400 dark:hover:text-white transition-colors group"
               active-class="text-brand-500 dark:text-white">
-              {{ link.name }}
+              <component :is="link.icon" :size="16" class="transition-transform group-hover:scale-110" />
+              <span>{{ link.name }}</span>
             </router-link>
           </nav>
         </div>
 
         <div class="flex items-center gap-2 md:gap-4">
-
-
 
           <div class="hidden md:flex relative group mr-2">
             <Search :size="16"
@@ -113,10 +118,10 @@ const notifications = [
 
           <ThemeToggler />
           <router-link to="/faq"
-            class="hidden md:flex items-center gap-1.5 px-2 text-gray-500 hover:text-brand-500 dark:text-gray-400 dark:hover:text-white transition-colors active:scale-95">
-            <HelpCircle :size="18" />
-            <!-- <span class="text-sm font-bold">Bantuan</span> -->
+            class="hidden md:flex items-center gap-1.5 px-2 text-gray-500 hover:text-brand-500 dark:text-gray-400 dark:hover:text-white transition-colors active:scale-95 group">
+            <HelpCircle :size="18" class="transition-transform group-hover:scale-110" />
           </router-link>
+
           <div class="relative hidden sm:block" @mouseenter="isNotifOpen = true" @mouseleave="isNotifOpen = false">
             <button
               :class="['relative flex h-9 w-9 md:h-10 md:w-10 items-center justify-center rounded-xl border transition-all active:scale-95',
@@ -168,7 +173,7 @@ const notifications = [
                           {{ notif.desc }}
                         </p>
                         <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{{ notif.time
-                          }}</span>
+                        }}</span>
                       </div>
                     </div>
                   </div>
@@ -228,28 +233,38 @@ const notifications = [
               class="w-full rounded-xl border border-gray-200 bg-gray-50 py-3 pl-10 pr-4 text-sm font-bold transition-all focus:border-brand-500/50 focus:bg-white focus:ring-4 focus:ring-brand-500/5 dark:border-gray-800 dark:bg-white/[0.03] dark:text-gray-200 focus:outline-none" />
           </div>
 
-          <nav class="flex flex-col gap-2">
+          <nav class="flex flex-col gap-1">
+            <!-- 1. Main Links -->
             <router-link v-for="link in navLinks" :key="link.name" :to="link.href"
-              class="flex items-center justify-between p-4 rounded-xl font-black text-gray-800 dark:text-gray-200 hover:bg-brand-50 hover:text-brand-500 dark:hover:bg-brand-500/5 transition-all text-sm uppercase tracking-wider"
+              class="flex items-center justify-between p-4 rounded-xl font-black text-gray-800 dark:text-gray-200 hover:bg-brand-50 hover:text-brand-500 dark:hover:bg-brand-500/5 transition-all text-sm uppercase tracking-widest"
               @click="isMobileMenuOpen = false">
-              {{ link.name }}
+              <div class="flex items-center gap-3">
+                <component :is="link.icon" :size="18" />
+                <span>{{ link.name }}</span>
+              </div>
               <ChevronDown :size="16" class="-rotate-90 opacity-40" />
             </router-link>
 
-            <!-- Tombol FAQ / Bantuan (Mobile) -->
+            <!-- 2. Tombol FAQ / Bantuan (Mobile) -->
             <router-link to="/faq"
-              class="flex items-center gap-3 p-4 rounded-xl font-black text-gray-800 dark:text-gray-200 hover:bg-brand-50 hover:text-brand-500 dark:hover:bg-brand-500/5 transition-all text-sm uppercase tracking-wider"
+              class="flex items-center justify-between p-4 rounded-xl font-black text-gray-800 dark:text-gray-200 hover:bg-brand-50 hover:text-brand-500 dark:hover:bg-brand-500/5 transition-all text-sm uppercase tracking-widest"
               @click="isMobileMenuOpen = false">
-              <HelpCircle :size="18" />
-              Bantuan (FAQ)
+              <div class="flex items-center gap-3">
+                <HelpCircle :size="18" />
+                <span>Bantuan (FAQ)</span>
+              </div>
+              <ChevronDown :size="16" class="-rotate-90 opacity-40" />
             </router-link>
 
+            <!-- 3. Tombol Notifications (Mobile) -->
             <button @click="toggleNotif"
-              class="sm:hidden flex items-center justify-between p-4 rounded-xl font-black text-gray-800 dark:text-gray-200 hover:bg-brand-50 hover:text-brand-500 dark:hover:bg-brand-500/5 transition-all text-sm uppercase tracking-wider w-full text-left">
-              <div class="flex items-center gap-2">
+              class="sm:hidden flex items-center justify-between p-4 rounded-xl font-black text-gray-800 dark:text-gray-200 hover:bg-brand-50 hover:text-brand-500 dark:hover:bg-brand-500/5 transition-all text-sm uppercase tracking-widest w-full text-left">
+              <div class="flex items-center gap-3">
+                <Bell :size="18" />
                 <span>Notifications</span>
+                <!-- Lencana Notifikasi Merah -->
                 <span v-if="notifications.some(n => n.unread)"
-                  class="flex h-5 w-5 items-center justify-center rounded-full bg-error-500 text-[10px] text-white">
+                  class="flex h-[20px] w-[20px] items-center justify-center rounded-full bg-error-500 text-[11px] font-bold text-white shadow-sm">
                   {{notifications.filter(n => n.unread).length}}
                 </span>
               </div>
@@ -257,12 +272,15 @@ const notifications = [
                 :class="['-rotate-90 opacity-40 transition-transform', isNotifOpen ? 'rotate-0' : '']" />
             </button>
 
-            <div v-if="isNotifOpen" class="sm:hidden bg-gray-50 dark:bg-gray-800/30 rounded-xl overflow-hidden mt-1">
+            <!-- 4. Dropdown Notifications List (Mobile) -->
+            <div v-if="isNotifOpen"
+              class="sm:hidden bg-gray-50 dark:bg-gray-800/30 rounded-xl overflow-hidden mt-1 mb-2">
               <div v-for="notif in notifications" :key="'mob-' + notif.id"
                 class="p-3 border-b border-gray-100 dark:border-gray-800 last:border-0 flex gap-3">
                 <div class="flex-shrink-0">
-                  <div v-if="notif.image" class="h-8 w-8 rounded-md overflow-hidden"><img :src="notif.image"
-                      class="h-full w-full object-cover"></div>
+                  <div v-if="notif.image" class="h-8 w-8 rounded-md overflow-hidden">
+                    <img :src="notif.image" class="h-full w-full object-cover">
+                  </div>
                   <div v-else
                     :class="['h-8 w-8 rounded-md flex items-center justify-center', notif.iconBg, notif.iconColor]">
                     <component :is="notif.icon" :size="14" />
@@ -274,7 +292,7 @@ const notifications = [
                 </div>
               </div>
               <router-link to="/notifications" @click="isMobileMenuOpen = false"
-                class="block text-center w-full py-2 text-[10px] font-bold uppercase text-brand-500">
+                class="block text-center w-full py-3 text-[10px] font-black uppercase tracking-widest text-brand-500 bg-gray-100/50 dark:bg-gray-800/50 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
                 View All
               </router-link>
             </div>

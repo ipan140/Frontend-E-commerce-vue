@@ -168,13 +168,12 @@ onUnmounted(() => {
         </swiper>
       </section>
 
-      <!-- MENU CEPAT (QUICK LINKS) -->
+      <!-- MENU CEPAT (QUICK LINKS) - DIUBAH MENJADI GRID -->
       <section
         class="bg-white dark:bg-gray-900/40 border border-gray-100 dark:border-gray-800 rounded-2xl md:rounded-[32px] p-4 md:p-6 shadow-theme-sm relative z-10 -mt-6 md:-mt-10 mx-2 md:mx-6">
-        <div
-          class="flex lg:grid lg:grid-cols-10 overflow-x-auto hide-scrollbar snap-x snap-mandatory gap-2 md:gap-4 pb-2 lg:pb-0">
+        <div class="grid grid-cols-4 sm:grid-cols-5 lg:grid-cols-10 gap-y-6 gap-x-2 md:gap-4">
           <router-link v-for="link in quickLinks" :key="link.name" to="/category"
-            class="snap-start group flex flex-col items-center gap-2 md:gap-3 min-w-[80px] md:min-w-[90px] flex-1 hover:-translate-y-1 transition-all">
+            class="group flex flex-col items-center gap-2 md:gap-3 flex-1 hover:-translate-y-1 transition-all">
 
             <div
               :class="['flex h-12 w-12 md:h-14 md:w-14 items-center justify-center rounded-[16px] md:rounded-[20px] transition-all duration-300 group-hover:scale-110 shadow-theme-xs border border-gray-100 dark:border-gray-700 group-hover:border-transparent bg-white dark:bg-gray-800 relative overflow-hidden']">
@@ -344,7 +343,7 @@ onUnmounted(() => {
             </div>
             <div class="space-y-1">
               <h4 class="text-xs md:text-sm font-bold text-gray-900 dark:text-white truncate">Pro Component Module {{ i
-                }}</h4>
+              }}</h4>
               <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
                 <span class="text-xs md:text-sm font-black text-gray-900 dark:text-white">$450.00</span>
                 <span class="text-[9px] md:text-[10px] font-bold text-gray-400 uppercase tracking-widest">2.1k
@@ -388,18 +387,5 @@ onUnmounted(() => {
 
 .swiper-slide-active .animate-in {
   animation-fill-mode: forwards;
-}
-
-/* Hide Scrollbar for Horizontal Menu (Mobile) */
-.hide-scrollbar {
-  -ms-overflow-style: none;
-  /* IE and Edge */
-  scrollbar-width: none;
-  /* Firefox */
-}
-
-.hide-scrollbar::-webkit-scrollbar {
-  display: none;
-  /* Chrome, Safari and Opera */
 }
 </style>
