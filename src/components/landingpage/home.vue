@@ -4,16 +4,31 @@ import {
   Zap,
   ChevronRight,
   Monitor,
+  Laptop,
   Smartphone,
   Shirt,
   ShoppingBag,
   Briefcase,
   Watch,
   Heart,
-  Gamepad,
-  LayoutGrid,
+  Gamepad2,
   ShoppingCart,
-  TrendingUp
+  TrendingUp,
+  Ticket,
+  Moon,
+  Store,
+  Percent,
+  Glasses,
+  HeartPulse,
+  Coffee,
+  Sparkles,
+  Home,
+  Gem,
+  Smile,
+  Users,
+  Star,
+  Car,
+  Activity
 } from 'lucide-vue-next'
 import { Swiper, SwiperSlide } from 'swiper/vue'
 import { Navigation, Pagination, Autoplay } from 'swiper/modules'
@@ -31,16 +46,42 @@ const banners = ref([
   { id: 3, title: 'Strategic Lifestyle Gear', desc: 'Discover the latest trends with a focus on quality and sustainable luxury.', image: 'https://images.unsplash.com/photo-1491933382434-500287f9b54b?auto=format&fit=crop&q=80&w=1200' }
 ])
 
-const categories = ref([
-  { name: 'Hardware', icon: Monitor, color: 'brand' },
-  { name: 'Devices', icon: Smartphone, color: 'blue-light' },
-  { name: 'Apparel', icon: Shirt, color: 'warning' },
-  { name: 'Inventory', icon: ShoppingBag, color: 'success' },
-  { name: 'Professional', icon: Briefcase, color: 'info' },
-  { name: 'Accessories', icon: Watch, color: 'primary' },
-  { name: 'Lifestyle', icon: Heart, color: 'error' },
-  { name: 'Entertainment', icon: Gamepad, color: 'secondary' },
-  { name: 'Essentials', icon: ShoppingCart, color: 'success' },
+// 1. Menu Cepat (Quick Links) - Baris pertama
+const quickLinks = ref([
+  { name: 'TrendStore Pilih Lokal', icon: Heart, color: 'error' },
+  { name: 'TrendStore Mall', icon: ShoppingBag, color: 'error' },
+  { name: 'Pulsa, Tagihan & Tiket', icon: Smartphone, color: 'success' },
+  { name: 'Flash Sale', icon: Zap, color: 'warning' },
+  { name: 'Supermarket', icon: ShoppingCart, color: 'brand' },
+  { name: 'Dikelola TrendStore', icon: Store, color: 'error' },
+  { name: 'FitCheck Diskon 25%', icon: Shirt, color: 'warning' },
+  { name: 'Gratis Ongkir & Voucher', icon: Ticket, color: 'warning' },
+  { name: 'TrendStore Barokah', icon: Moon, color: 'success' },
+  { name: 'Semua Promo', icon: Percent, color: 'success' }
+])
+
+// 2. Kategori Utama (Grid 2 Baris) - Sesuai gambar
+const mainCategories = ref([
+  { name: 'Elektronik', icon: Monitor },
+  { name: 'Komputer & Aksesoris', icon: Laptop },
+  { name: 'Handphone & Aksesoris', icon: Smartphone },
+  { name: 'Pakaian Pria', icon: Shirt },
+  { name: 'Sepatu Pria', icon: Activity },
+  { name: 'Tas Pria', icon: Briefcase },
+  { name: 'Aksesoris Fashion', icon: Glasses },
+  { name: 'Jam Tangan', icon: Watch },
+  { name: 'Kesehatan', icon: HeartPulse },
+  { name: 'Hobi & Koleksi', icon: Gamepad2 },
+  { name: 'Makanan & Minuman', icon: Coffee },
+  { name: 'Perawatan & Kecantikan', icon: Sparkles },
+  { name: 'Perlengkapan Rumah', icon: Home },
+  { name: 'Pakaian Wanita', icon: Gem },
+  { name: 'Fashion Muslim', icon: Moon },
+  { name: 'Fashion Bayi & Anak', icon: Smile },
+  { name: 'Ibu & Bayi', icon: Users },
+  { name: 'Sepatu Wanita', icon: Star },
+  { name: 'Tas Wanita', icon: ShoppingBag },
+  { name: 'Otomotif', icon: Car }
 ])
 
 const flashSaleProducts = ref([
@@ -49,13 +90,7 @@ const flashSaleProducts = ref([
   { id: 3, name: 'Studio Ergonomic Desk', price: '3,500', originalPrice: '5,000', discount: '30% OFF', image: 'https://images.unsplash.com/photo-1518455027359-f3f816b1a20a?auto=format&fit=crop&q=80&w=400', progress: 45, color: 'warning' },
   { id: 4, name: 'Tactile Keyboard Lite', price: '850', originalPrice: '1,200', discount: '29% OFF', image: 'https://images.unsplash.com/photo-1511467687858-23d96c32e4ae?auto=format&fit=crop&q=80&w=400', progress: 90, color: 'error' },
   { id: 5, name: 'Pro Monitor 4K', price: '1,100', originalPrice: '1,500', discount: '25% OFF', image: 'https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?auto=format&fit=crop&q=80&w=400', progress: 75, color: 'primary' },
-  { id: 6, name: 'Smart Home Hub', price: '299', originalPrice: '450', discount: '33% OFF', image: 'https://images.unsplash.com/photo-1558002038-1055907df827?auto=format&fit=crop&q=80&w=400', progress: 30, color: 'success' },
-  { id: 7, name: 'Noise Cancel Buds', price: '199', originalPrice: '299', discount: '33% OFF', image: 'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?auto=format&fit=crop&q=80&w=400', progress: 55, color: 'warning' },
-  { id: 8, name: 'Ultra Thin Tablet', price: '899', originalPrice: '1,299', discount: '30% OFF', image: 'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?auto=format&fit=crop&q=80&w=400', progress: 85, color: 'error' },
-  { id: 9, name: 'Gaming Mouse RGB', price: '79', originalPrice: '120', discount: '34% OFF', image: 'https://images.unsplash.com/photo-1527864550417-7df91fc52c4a?auto=format&fit=crop&q=80&w=400', progress: 40, color: 'primary' },
-  { id: 10, name: 'Webcam 4K Ultra', price: '149', originalPrice: '220', discount: '32% OFF', image: 'https://images.unsplash.com/photo-1583394132231-2625bd2944ad?auto=format&fit=crop&q=80&w=400', progress: 95, color: 'success' },
-  { id: 11, name: 'Portable SSD 2TB', price: '249', originalPrice: '350', discount: '28% OFF', image: 'https://images.unsplash.com/photo-1597733336794-12d05021d510?auto=format&fit=crop&q=80&w=400', progress: 20, color: 'warning' },
-  { id: 12, name: 'Smart Desk Lamp', price: '89', originalPrice: '130', discount: '31% OFF', image: 'https://images.unsplash.com/photo-1534073828943-f801091bb18c?auto=format&fit=crop&q=80&w=400', progress: 60, color: 'error' },
+  { id: 6, name: 'Smart Home Hub', price: '299', originalPrice: '450', discount: '33% OFF', image: 'https://images.unsplash.com/photo-1558002038-1055907df827?auto=format&fit=crop&q=80&w=400', progress: 30, color: 'success' }
 ])
 
 const countdown = ref({ h: '02', m: '45', s: '30' })
@@ -82,7 +117,6 @@ onMounted(() => {
   }, 1000)
 })
 
-// Mencegah memory leak saat komponen di-unmount
 onUnmounted(() => {
   clearInterval(timer)
 })
@@ -93,7 +127,9 @@ onUnmounted(() => {
     class="min-h-screen bg-gray-50 dark:bg-gray-dark font-outfit text-gray-900 dark:text-white transition-colors duration-300">
     <Nav />
 
-    <main class="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-8 py-6 md:py-8 space-y-12 md:space-y-16">
+    <main class="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-8 py-6 md:py-8 space-y-8 md:space-y-12">
+
+      <!-- HERO BANNER SECTION -->
       <section class="relative overflow-hidden rounded-2xl md:rounded-[32px] bg-gray-900 text-white shadow-theme-xl">
         <div class="absolute inset-0 z-0 bg-gradient-to-br from-brand-600/40 via-transparent to-transparent"></div>
         <swiper :modules="modules" :slides-per-view="1" :pagination="{ clickable: true }" :autoplay="{ delay: 5000 }"
@@ -109,8 +145,9 @@ onUnmounted(() => {
                   {{ banner.title.split(' ').slice(0, -1).join(' ') }}
                   <span class="text-brand-400">{{ banner.title.split(' ').slice(-1)[0] }}</span>
                 </h1>
-                <p class="text-sm sm:text-base md:text-xl text-gray-300 font-medium max-w-lg leading-relaxed">{{
-                  banner.desc }}</p>
+                <p class="text-sm sm:text-base md:text-xl text-gray-300 font-medium max-w-lg leading-relaxed">
+                  {{ banner.desc }}
+                </p>
                 <div class="flex flex-wrap gap-3 md:gap-4 pt-2 md:pt-4">
                   <button
                     class="px-6 py-3 md:px-8 md:py-4 rounded-xl md:rounded-2xl bg-brand-500 text-white font-black text-xs md:text-base border-b-4 border-brand-700 shadow-xl shadow-brand-500/20 active:translate-y-1 active:border-b-0 transition-all">Explore
@@ -131,30 +168,73 @@ onUnmounted(() => {
         </swiper>
       </section>
 
-      <ComponentCard title="Ecosystem Categories"
-        desc="Explore our professional categories curated for high-performance lifestyles.">
+      <!-- MENU CEPAT (QUICK LINKS) -->
+      <section
+        class="bg-white dark:bg-gray-900/40 border border-gray-100 dark:border-gray-800 rounded-2xl md:rounded-[32px] p-4 md:p-6 shadow-theme-sm relative z-10 -mt-6 md:-mt-10 mx-2 md:mx-6">
         <div
-          class="grid grid-cols-2 min-[400px]:grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-9 gap-3 md:gap-4">
+          class="flex lg:grid lg:grid-cols-10 overflow-x-auto hide-scrollbar snap-x snap-mandatory gap-2 md:gap-4 pb-2 lg:pb-0">
+          <router-link v-for="link in quickLinks" :key="link.name" to="/category"
+            class="snap-start group flex flex-col items-center gap-2 md:gap-3 min-w-[80px] md:min-w-[90px] flex-1 hover:-translate-y-1 transition-all">
 
-          <!-- GANTI <a> menjadi <router-link> dan arahkan ke '/category' -->
-          <router-link v-for="cat in categories" :key="cat.name" to="/category"
-            class="group flex flex-col items-center gap-3 md:gap-4 p-4 md:p-5 rounded-xl md:rounded-2xl border border-transparent hover:border-brand-500/20 hover:bg-white dark:hover:bg-white/5 hover:shadow-theme-md transition-all">
-            <div :class="['flex h-12 w-12 md:h-14 md:w-14 items-center justify-center rounded-2xl md:rounded-[20px] transition-all group-hover:scale-110 shadow-theme-xs',
-              cat.color === 'brand' ? 'bg-brand-50 text-brand-500' :
-                cat.color === 'blue-light' ? 'bg-blue-light-50 text-blue-light-500' :
-                  cat.color === 'warning' ? 'bg-warning-50 text-warning-500' :
-                    cat.color === 'success' ? 'bg-success-50 text-success-500' :
-                      cat.color === 'error' ? 'bg-error-50 text-error-500' : 'bg-gray-50 text-gray-500']">
-              <component :is="cat.icon" class="w-6 h-6 md:w-7 md:h-7" />
+            <div
+              :class="['flex h-12 w-12 md:h-14 md:w-14 items-center justify-center rounded-[16px] md:rounded-[20px] transition-all duration-300 group-hover:scale-110 shadow-theme-xs border border-gray-100 dark:border-gray-700 group-hover:border-transparent bg-white dark:bg-gray-800 relative overflow-hidden']">
+              <div :class="['absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity',
+                link.color === 'brand' ? 'bg-brand-500' :
+                  link.color === 'blue-light' ? 'bg-blue-light-500' :
+                    link.color === 'warning' ? 'bg-warning-500' :
+                      link.color === 'success' ? 'bg-success-500' :
+                        link.color === 'error' ? 'bg-error-500' : 'bg-gray-500'
+              ]"></div>
+
+              <component :is="link.icon" :class="['w-6 h-6 md:w-7 md:h-7 relative z-10 transition-transform group-hover:scale-110',
+                link.color === 'brand' ? 'text-brand-500' :
+                  link.color === 'blue-light' ? 'text-blue-light-500' :
+                    link.color === 'warning' ? 'text-warning-500' :
+                      link.color === 'success' ? 'text-success-500' :
+                        link.color === 'error' ? 'text-error-500' : 'text-gray-500'
+              ]" />
             </div>
+
             <span
-              class="text-[10px] md:text-xs font-black uppercase tracking-wider text-gray-500 group-hover:text-brand-500 text-center">{{
-                cat.name }}</span>
+              class="text-[10px] md:text-[11px] font-bold md:font-black text-gray-700 dark:text-gray-300 group-hover:text-brand-500 dark:group-hover:text-brand-400 text-center leading-tight line-clamp-2 px-1">
+              {{ link.name }}
+            </span>
+          </router-link>
+        </div>
+      </section>
+
+      <!-- KATEGORI GRID SECTION (Sesuai Gambar Kedua) -->
+      <section
+        class="bg-white dark:bg-gray-900/40 border border-gray-100 dark:border-gray-800 rounded-2xl md:rounded-[32px] shadow-theme-sm overflow-hidden mx-2 md:mx-6">
+        <div class="px-6 py-4 border-b border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-800/30">
+          <h2 class="text-sm md:text-base font-black uppercase tracking-widest text-gray-600 dark:text-gray-300">
+            Kategori
+          </h2>
+        </div>
+
+        <!-- Grid dengan pemisah border (seperti di gambar e-commerce) -->
+        <div
+          class="grid grid-cols-4 md:grid-cols-5 lg:grid-cols-10 divide-x divide-y divide-gray-100 dark:divide-gray-800/50 border-t border-l border-gray-100 dark:border-gray-800/50 -mt-px -ml-px">
+
+          <router-link v-for="cat in mainCategories" :key="cat.name" to="/category"
+            class="group flex flex-col items-center justify-start gap-3 p-4 md:p-5 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors relative">
+
+            <!-- Icon Frame (Bulat seperti gambar) -->
+            <div
+              class="flex h-12 w-12 md:h-14 md:w-14 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 group-hover:bg-brand-50 group-hover:text-brand-500 dark:group-hover:bg-brand-500/10 transition-all group-hover:scale-110">
+              <component :is="cat.icon" class="w-6 h-6 md:w-7 md:h-7 stroke-[1.5]" />
+            </div>
+
+            <span
+              class="text-[10px] md:text-[11px] font-bold text-gray-700 dark:text-gray-300 group-hover:text-brand-500 dark:group-hover:text-brand-400 text-center leading-tight line-clamp-2">
+              {{ cat.name }}
+            </span>
           </router-link>
 
         </div>
-      </ComponentCard>
+      </section>
 
+      <!-- FLASH SALE SECTION -->
       <section class="space-y-6 md:space-y-8">
         <div
           class="relative overflow-hidden rounded-2xl md:rounded-[32px] bg-brand-500 text-white shadow-theme-xl p-6 md:p-10 flex flex-col lg:flex-row items-center justify-between gap-6 md:gap-8 border-b-4 md:border-b-8 border-brand-700">
@@ -244,6 +324,7 @@ onUnmounted(() => {
         </div>
       </section>
 
+      <!-- RECOMMENDATIONS SECTION -->
       <ComponentCard title="Strategic Recommendations" desc="Based on your professional profile and market trends.">
         <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 md:gap-6">
           <router-link v-for="i in 12" :key="i" :to="`/product/${i + 40}`"
@@ -281,6 +362,7 @@ onUnmounted(() => {
           </button>
         </div>
       </ComponentCard>
+
     </main>
 
     <Footer />
@@ -288,6 +370,7 @@ onUnmounted(() => {
 </template>
 
 <style>
+/* Swiper Pagination Styling */
 .swiper-pagination-bullet {
   background-color: theme('colors.gray.400');
   height: 8px;
@@ -305,5 +388,18 @@ onUnmounted(() => {
 
 .swiper-slide-active .animate-in {
   animation-fill-mode: forwards;
+}
+
+/* Hide Scrollbar for Horizontal Menu (Mobile) */
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+  /* Chrome, Safari and Opera */
 }
 </style>
