@@ -15,6 +15,23 @@ import Footer from '../utils/footer.vue'
 
 const isCategoryOpen = ref(true)
 const isFilterOpen = ref(true)
+const isPriceDropdownOpen = ref(false)
+
+// --- STATE UNTUK PAGINATION ---
+const currentPage = ref(1)
+const totalPages = ref(9)
+
+const nextPage = () => {
+    if (currentPage.value < totalPages.value) {
+        currentPage.value++
+    }
+}
+
+const prevPage = () => {
+    if (currentPage.value > 1) {
+        currentPage.value--
+    }
+}
 
 // --- DUMMY DATA UNTUK BRANDS ---
 const brands = ref([
@@ -74,7 +91,7 @@ const sorts = ['Populer', 'Terbaru', 'Terlaris']
 
         <main class="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-8 py-6 md:py-8 space-y-8">
 
- <section
+            <section
                 class="bg-white dark:bg-gray-900/50 border border-gray-100 dark:border-gray-800 rounded-2xl md:rounded-[32px] overflow-hidden shadow-theme-xl">
                 <div class="flex justify-between items-center p-5 md:p-6 border-b border-gray-100 dark:border-gray-800">
                     <h2 class="text-xl md:text-2xl font-black uppercase tracking-tight flex items-center gap-2">
@@ -208,37 +225,68 @@ const sorts = ['Populer', 'Terbaru', 'Terlaris']
                 <main class="flex-1 space-y-6">
 
                     <div
-                        class="bg-white dark:bg-white/[0.02] border border-gray-100 dark:border-gray-800 p-2 md:p-3 rounded-2xl flex flex-col md:flex-row items-center justify-between gap-4 shadow-theme-sm">
-                        <div class="flex flex-wrap items-center gap-2 w-full md:w-auto">
+                        class="bg-white dark:bg-white/[0.02] border border-gray-100 dark:border-gray-800 p-3 md:p-3 rounded-2xl flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 shadow-theme-sm">
+
+                        <div class="flex flex-col md:flex-row items-stretch md:items-center gap-2 w-full lg:w-auto">
                             <span
-                                class="text-xs font-bold text-gray-400 uppercase tracking-widest mr-2 hidden sm:block">Urutkan:</span>
+                                class="text-xs font-bold text-gray-400 uppercase tracking-widest mr-2 hidden md:block">Urutkan:</span>
+
                             <button v-for="sort in sorts" :key="sort"
-                                :class="['px-5 py-2.5 text-xs font-black uppercase tracking-widest rounded-xl transition-all',
-                                    activeSort === sort ? 'bg-brand-500 text-white shadow-lg shadow-brand-500/20' : 'bg-transparent text-gray-500 hover:bg-gray-50 dark:hover:bg-white/5']"
+                                :class="['w-full md:w-auto px-5 py-3 md:py-2.5 text-xs font-black uppercase tracking-widest rounded-xl transition-all',
+                                    activeSort === sort ? 'bg-brand-500 text-white shadow-lg shadow-brand-500/20' : 'bg-transparent text-gray-500 hover:bg-gray-50 dark:hover:bg-white/5 border border-transparent']"
                                 @click="activeSort = sort">
                                 {{ sort }}
                             </button>
 
-                            <div class="relative group">
-                                <button
-                                    class="bg-transparent text-gray-500 px-5 py-2.5 text-xs font-black uppercase tracking-widest rounded-xl flex items-center gap-2 hover:bg-gray-50 dark:hover:bg-white/5 transition-all border border-gray-200 dark:border-gray-700">
-                                    Harga
-                                    <ChevronDown :size="16" />
+                            <div class="relative group w-full md:w-auto z-20">
+                                <button @click="isPriceDropdownOpen = !isPriceDropdownOpen"
+                                    class="w-full md:w-auto bg-transparent text-gray-500 px-5 py-3 md:py-2.5 text-xs font-black uppercase tracking-widest rounded-xl flex items-center justify-between md:justify-center gap-2 hover:bg-gray-50 dark:hover:bg-white/5 transition-all border border-gray-200 dark:border-gray-700">
+                                    <span>Harga</span>
+                                    <ChevronDown :size="16" class="transition-transform duration-300"
+                                        :class="{ 'rotate-180': isPriceDropdownOpen }" />
                                 </button>
+
+                                <transition enter-active-class="transition duration-200 ease-out"
+                                    enter-from-class="transform scale-95 opacity-0"
+                                    enter-to-class="transform scale-100 opacity-100"
+                                    leave-active-class="transition duration-75 ease-in"
+                                    leave-from-class="transform scale-100 opacity-100"
+                                    leave-to-class="transform scale-95 opacity-0">
+                                    <div v-show="isPriceDropdownOpen"
+                                        class="absolute left-0 mt-2 w-full md:w-48 rounded-xl bg-white dark:bg-gray-900 shadow-theme-xl border border-gray-100 dark:border-gray-800 overflow-hidden">
+                                        <button @click="isPriceDropdownOpen = false"
+                                            class="block w-full text-left px-4 py-3 text-xs font-bold text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors uppercase tracking-widest">
+                                            Rendah ke Tinggi
+                                        </button>
+                                        <button @click="isPriceDropdownOpen = false"
+                                            class="block w-full text-left px-4 py-3 text-xs font-bold text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors border-t border-gray-100 dark:border-gray-800 uppercase tracking-widest">
+                                            Tinggi ke Rendah
+                                        </button>
+                                    </div>
+                                </transition>
                             </div>
                         </div>
 
-                        <div class="flex items-center gap-4 pr-2">
+                        <div
+                            class="flex items-center justify-center lg:justify-end gap-4 w-full lg:w-auto pt-3 lg:pt-0 mt-2 lg:mt-0 border-t border-gray-100 dark:border-gray-800 lg:border-0">
                             <div class="text-xs font-bold text-gray-400 tracking-widest">
-                                <span class="text-brand-500">1</span> / 9
+                                <span class="text-brand-500">{{ currentPage }}</span> / {{ totalPages }}
                             </div>
                             <div class="flex gap-1">
-                                <button
-                                    class="h-9 w-9 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-300 dark:text-gray-600 flex items-center justify-center cursor-not-allowed">
+                                <button @click="prevPage" :disabled="currentPage === 1" :class="[
+                                    'h-9 w-9 rounded-xl flex items-center justify-center transition-all',
+                                    currentPage === 1
+                                        ? 'bg-gray-50 dark:bg-white/5 text-gray-300 dark:text-gray-600 cursor-not-allowed border border-transparent'
+                                        : 'bg-white dark:bg-white/[0.02] border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:border-brand-500 hover:text-brand-500 shadow-theme-xs active:scale-95'
+                                ]">
                                     <ChevronLeft :size="18" />
                                 </button>
-                                <button
-                                    class="h-9 w-9 rounded-xl bg-white dark:bg-white/[0.02] border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 flex items-center justify-center hover:border-brand-500 hover:text-brand-500 transition-all shadow-theme-xs active:scale-95">
+                                <button @click="nextPage" :disabled="currentPage === totalPages" :class="[
+                                    'h-9 w-9 rounded-xl flex items-center justify-center transition-all',
+                                    currentPage === totalPages
+                                        ? 'bg-gray-50 dark:bg-white/5 text-gray-300 dark:text-gray-600 cursor-not-allowed border border-transparent'
+                                        : 'bg-white dark:bg-white/[0.02] border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:border-brand-500 hover:text-brand-500 shadow-theme-xs active:scale-95'
+                                ]">
                                     <ChevronRight :size="18" />
                                 </button>
                             </div>
@@ -246,9 +294,8 @@ const sorts = ['Populer', 'Terbaru', 'Terlaris']
                     </div>
 
                     <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-5">
-
                         <router-link v-for="product in products" :key="product.id" :to="`/product/${product.id}`"
-                            class="group relative overflow-hidden rounded-[20px] md:rounded-[24px] bg-white dark:bg-white/[0.03] border border-gray-100 dark:border-gray-800 p-2.5 md:p-3 transition-all duration-300 hover:shadow-theme-xl hover:-translate-y-1 block">
+                            class="group relative overflow-hidden rounded-[20px] md:rounded-[24px] bg-white dark:bg-white/[0.03] border border-gray-100 dark:border-gray-800 p-2.5 md:p-3 transition-all duration-300 hover:shadow-theme-xl hover:-translate-y-1 block z-10">
 
                             <div
                                 class="relative aspect-square w-full bg-gray-100 dark:bg-gray-800 rounded-[14px] md:rounded-[18px] overflow-hidden mb-3 md:mb-4">
@@ -312,7 +359,6 @@ const sorts = ['Populer', 'Terbaru', 'Terlaris']
                                 </div>
                             </div>
                         </router-link>
-
                     </div>
 
                     <div class="mt-10 flex justify-center pb-8">
