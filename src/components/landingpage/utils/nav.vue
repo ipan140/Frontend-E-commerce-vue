@@ -32,7 +32,6 @@ const toggleNotif = () => {
 }
 
 const navLinks = [
-  { name: 'Home', href: '/', icon: Home },
   { name: 'Products', href: '#', icon: ShoppingBag },
   { name: 'Support', href: '#', icon: Headphones }
 ]
@@ -91,9 +90,8 @@ const notifications = [
               class="h-9 w-9 md:h-10 md:w-10 flex items-center justify-center rounded-xl bg-brand-500 text-white shadow-lg shadow-brand-500/20 group-hover:bg-brand-600 transition-colors">
               <Store :size="18" class="md:w-5 md:h-5" />
             </div>
-            <!-- Menyembunyikan text logo sebagian jika layar terlalu sempit (bisa diatur) -->
             <span
-              class="text-base sm:text-lg md:text-xl font-black tracking-tight text-gray-900 dark:text-white uppercase italic block truncate">
+              class="text-base sm:text-lg md:text-xl font-extrabold text-gray-900 dark:text-white uppercase antialiased block truncate">
               TrendStore
             </span>
           </router-link>
@@ -178,7 +176,7 @@ const notifications = [
                         <p class="text-xs text-gray-500 dark:text-gray-400 line-clamp-2 leading-relaxed mb-1.5">{{
                           notif.desc }}</p>
                         <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{{ notif.time
-                          }}</span>
+                        }}</span>
                       </div>
                     </div>
                   </div>

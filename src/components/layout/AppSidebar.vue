@@ -13,13 +13,18 @@
       'py-8 flex',
       !isExpanded && !isHovered ? 'lg:justify-center' : 'justify-start',
     ]">
-      <router-link to="/">
-        <img v-if="isExpanded || isHovered || isMobileOpen" class="dark:hidden" src="/images/logo/logo.svg" alt="Logo"
-          width="150" height="40" />
-        <img v-if="isExpanded || isHovered || isMobileOpen" class="hidden dark:block" src="/images/logo/logo-dark.svg"
-          alt="Logo" width="150" height="40" />
-        <img v-else src="/images/logo/logo-icon.svg" alt="Logo" width="32" height="32" />
-      </router-link>
+      <div class="flex items-center gap-6 lg:gap-10">
+        <router-link to="/" class="flex items-center gap-2.5 active:scale-95 transition-transform group shrink-0">
+          <div
+            class="h-9 w-9 md:h-10 md:w-10 flex items-center justify-center rounded-xl bg-brand-500 text-white shadow-lg shadow-brand-500/20 group-hover:bg-brand-600 transition-colors">
+            <Store :size="18" class="md:w-5 md:h-5" />
+          </div>
+          <span
+            class="text-base sm:text-lg md:text-xl font-extrabold text-gray-900 dark:text-white uppercase antialiased block truncate">
+            TrendStore
+          </span>
+        </router-link>
+      </div>
     </div>
     <div class="flex flex-col overflow-y-auto duration-300 ease-linear no-scrollbar">
       <nav class="mb-6">
@@ -147,6 +152,7 @@
 <script setup>
 import { ref, computed } from "vue";
 import { useRoute } from "vue-router";
+import { Store } from 'lucide-vue-next'; // Dipindah ke atas agar lebih rapi
 
 import {
   GridIcon,
@@ -166,6 +172,9 @@ import {
 import SidebarWidget from "./SidebarWidget.vue";
 import BoxCubeIcon from "@/icons/BoxCubeIcon.vue";
 import { useSidebar } from "@/composables/useSidebar";
+
+// Hapus import ThemeToggler karena tidak digunakan di sidebar ini
+// import ThemeToggler from '../../common/ThemeToggler.vue'
 
 const route = useRoute();
 
@@ -193,7 +202,6 @@ const menuGroups = [
         name: "User Profile",
         path: "/profile",
       },
-
       {
         name: "Forms",
         icon: ListIcon,
@@ -247,7 +255,6 @@ const menuGroups = [
           { name: "Signup", path: "/signup", pro: false },
         ],
       },
-      // ... Add other menu items here
     ],
   },
 ];
