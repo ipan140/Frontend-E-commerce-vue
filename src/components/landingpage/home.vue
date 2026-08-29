@@ -36,6 +36,7 @@ import ComponentCard from '../common/ComponentCard.vue'
 import Badge from '../ui/Badge.vue'
 import Nav from './utils/nav.vue'
 import Footer from './utils/footer.vue'
+import api from '@/api/axios'
 
 // Swiper logic
 const modules = [Navigation, Pagination, Autoplay]
@@ -61,42 +62,77 @@ const quickLinks = ref([
 ])
 
 // 2. Kategori Utama (Grid 2 Baris) - Sesuai gambar
-const mainCategories = ref([
-  { name: 'Elektronik', icon: Monitor },
-  { name: 'Komputer & Aksesoris', icon: Laptop },
-  { name: 'Handphone & Aksesoris', icon: Smartphone },
-  { name: 'Pakaian Pria', icon: Shirt },
-  { name: 'Sepatu Pria', icon: Activity },
-  { name: 'Tas Pria', icon: Briefcase },
-  { name: 'Aksesoris Fashion', icon: Glasses },
-  { name: 'Jam Tangan', icon: Watch },
-  { name: 'Kesehatan', icon: HeartPulse },
-  { name: 'Hobi & Koleksi', icon: Gamepad2 },
-  { name: 'Makanan & Minuman', icon: Coffee },
-  { name: 'Perawatan & Kecantikan', icon: Sparkles },
-  { name: 'Perlengkapan Rumah', icon: Home },
-  { name: 'Pakaian Wanita', icon: Gem },
-  { name: 'Fashion Muslim', icon: Moon },
-  { name: 'Fashion Bayi & Anak', icon: Smile },
-  { name: 'Ibu & Bayi', icon: Users },
-  { name: 'Sepatu Wanita', icon: Star },
-  { name: 'Tas Wanita', icon: ShoppingBag },
-  { name: 'Otomotif', icon: Car }
-])
+const mainCategories = ref<any[]>([])
 
-const flashSaleProducts = ref([
-  { id: 1, name: 'Precision Audio X1', price: '2,499', originalPrice: '3,999', discount: '40% OFF', image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&q=80&w=400', progress: 65, color: 'primary' },
-  { id: 2, name: 'Quantum Watch Pro', price: '1,200', originalPrice: '2,000', discount: '40% OFF', image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&q=80&w=400', progress: 80, color: 'success' },
-  { id: 3, name: 'Studio Ergonomic Desk', price: '3,500', originalPrice: '5,000', discount: '30% OFF', image: 'https://images.unsplash.com/photo-1518455027359-f3f816b1a20a?auto=format&fit=crop&q=80&w=400', progress: 45, color: 'warning' },
-  { id: 4, name: 'Tactile Keyboard Lite', price: '850', originalPrice: '1,200', discount: '29% OFF', image: 'https://images.unsplash.com/photo-1511467687858-23d96c32e4ae?auto=format&fit=crop&q=80&w=400', progress: 90, color: 'error' },
-  { id: 5, name: 'Pro Monitor 4K', price: '1,100', originalPrice: '1,500', discount: '25% OFF', image: 'https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?auto=format&fit=crop&q=80&w=400', progress: 75, color: 'primary' },
-  { id: 6, name: 'Smart Home Hub', price: '299', originalPrice: '450', discount: '33% OFF', image: 'https://images.unsplash.com/photo-1558002038-1055907df827?auto=format&fit=crop&q=80&w=400', progress: 30, color: 'success' }
-])
+const flashSaleProducts = ref<any[]>([])
+
+const recommendedProducts = ref<any[]>([])
+
+const fetchCategories = async () => {
+  try {
+    const res = await api.get('/categories')
+    // Fallback icon handling if DB doesn't have it or needs mapping
+    const iconsMap: Record<string, any> = {
+      'Elektronik': Monitor, 'Komputer & Aksesoris': Laptop, 'Handphone & Aksesoris': Smartphone,
+      'Pakaian Pria': Shirt, 'Sepatu Pria': Activity, 'Tas Pria': Briefcase, 'Aksesoris Fashion': Glasses,
+      'Jam Tangan': Watch, 'Kesehatan': HeartPulse, 'Hobi & Koleksi': Gamepad2, 'Makanan & Minuman': Coffee,
+      'Perawatan & Kecantikan': Sparkles, 'Perlengkapan Rumah': Home, 'Pakaian Wanita': Gem,
+      'Fashion Muslim': Moon, 'Fashion Bayi & Anak': Smile, 'Ibu & Bayi': Users, 'Sepatu Wanita': Star,
+      'Tas Wanita': ShoppingBag, 'Otomotif': Car
+    }
+    mainCategories.value = (res.data.data || []).map((cat: any) => ({
+      ...cat,
+      icon: iconsMap[cat.name] || ShoppingBag 
+    }))
+  } catch (error) {
+    console.error('Failed to fetch categories:', error)
+  }
+}
+
+const fetchFlashSales = async () => {
+  try {
+    const res = await api.get('/flashsale/all') // active or all
+    flashSaleProducts.value = (res.data.data || []).slice(0, 6).map((item: any) => {
+       const product = item.product || {}
+       return {
+         id: item.id,
+         name: product.name || 'Flash Sale Item',
+         price: item.price,
+         originalPrice: product.price || item.price * 1.5,
+         discount: 'SALE',
+         image: product.image || 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&q=80&w=400',
+         progress: Math.floor(Math.random() * 60) + 20,
+         color: 'primary'
+       }
+    })
+  } catch (error) {
+    console.error('Failed to fetch flash sales:', error)
+  }
+}
+
+const fetchProducts = async () => {
+  try {
+    const res = await api.get('/products')
+    recommendedProducts.value = (res.data.data || []).slice(0, 12).map((prod: any) => ({
+       id: prod.id,
+       name: prod.name,
+       price: prod.price,
+       sold: prod.sold_count || 0,
+       image: prod.image_url || `https://picsum.photos/seed/${prod.id}/400/400`
+    }))
+  } catch (error) {
+    console.error('Failed to fetch products:', error)
+  }
+}
 
 const countdown = ref({ h: '02', m: '45', s: '30' })
 let timer: ReturnType<typeof setInterval>
 
 onMounted(() => {
+  fetchCategories()
+  fetchFlashSales()
+  fetchProducts()
+
   timer = setInterval(() => {
     let s = parseInt(countdown.value.s)
     let m = parseInt(countdown.value.m)
@@ -326,27 +362,26 @@ onUnmounted(() => {
       <!-- RECOMMENDATIONS SECTION -->
       <ComponentCard title="Strategic Recommendations" desc="Based on your professional profile and market trends.">
         <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 md:gap-6">
-          <router-link v-for="i in 12" :key="i" :to="`/product/${i + 40}`"
+          <router-link v-for="(product, idx) in recommendedProducts" :key="product.id" :to="`/product/${product.id}`"
             class="group relative space-y-3 md:space-y-4 block">
             <div
               class="aspect-square rounded-xl md:rounded-2xl overflow-hidden bg-gray-100 dark:bg-gray-800 relative group-hover:shadow-theme-md transition-all">
-              <img :src="`https://picsum.photos/seed/${i + 40}/400/400`"
+              <img :src="product.image"
                 class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
-                alt="product">
+                :alt="product.name">
               <button @click.prevent
                 class="absolute bottom-2 right-2 md:bottom-3 md:right-3 h-8 w-8 md:h-10 md:w-10 rounded-lg md:rounded-xl bg-white/90 backdrop-blur-md shadow-theme-sm text-gray-700 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all hover:bg-brand-500 hover:text-white flex items-center justify-center z-10">
                 <ShoppingCart class="w-4 h-4 md:w-[18px] md:h-[18px]" />
               </button>
-              <Badge v-if="i % 3 === 0" variant="light" color="success"
+              <Badge v-if="idx % 3 === 0" variant="light" color="success"
                 class="absolute top-2 left-2 md:top-3 md:left-3 !text-[8px] md:!text-[9px] font-black uppercase tracking-widest">
                 Featured</Badge>
             </div>
             <div class="space-y-1">
-              <h4 class="text-xs md:text-sm font-bold text-gray-900 dark:text-white truncate">Pro Component Module {{ i
-              }}</h4>
+              <h4 class="text-xs md:text-sm font-bold text-gray-900 dark:text-white truncate">{{ product.name }}</h4>
               <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
-                <span class="text-xs md:text-sm font-black text-gray-900 dark:text-white">$450.00</span>
-                <span class="text-[9px] md:text-[10px] font-bold text-gray-400 uppercase tracking-widest">2.1k
+                <span class="text-xs md:text-sm font-black text-gray-900 dark:text-white">${{ product.price }}</span>
+                <span class="text-[9px] md:text-[10px] font-bold text-gray-400 uppercase tracking-widest">{{ product.sold }}
                   sold</span>
               </div>
             </div>

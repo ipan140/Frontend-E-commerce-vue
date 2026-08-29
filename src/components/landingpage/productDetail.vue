@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import {
     ChevronRight,
     Star,
@@ -13,45 +13,42 @@ import {
     Truck,
     ArrowLeft
 } from 'lucide-vue-next'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import Nav from './utils/nav.vue'
 import Footer from './utils/footer.vue'
 import Badge from '../ui/Badge.vue'
+import api from '@/api/axios'
 
 const router = useRouter()
-
-// Dummy Data Produk (Gaya Tech/Modern)
-const product = ref({
-    id: 1,
-    title: 'Quantum Watch Pro - Titanium Edition',
-    rating: 4.9,
-    ratingsCount: 842,
-    sold: '2.5k+',
-    priceMin: 1200,
-    priceMax: 1450,
-    originalPrice: 2000,
-    discount: '40% OFF',
-    images: [
-        'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&q=80&w=800',
-        'https://images.unsplash.com/photo-1434493789847-2f02dc6ca35d?auto=format&fit=crop&q=80&w=800',
-        'https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?auto=format&fit=crop&q=80&w=800',
-        'https://images.unsplash.com/photo-1542496658-e33a6d0d50f6?auto=format&fit=crop&q=80&w=800',
-    ],
-    colors: ['Midnight Black', 'Starlight Silver', 'Titanium Space'],
-    variants: ['GPS Only', 'GPS + Cellular'],
-    stock: 45,
-    category: ['Ecosystem', 'Accessories', 'Smartwatches'],
-    brand: 'Quantum',
-    warranty: '2 Years International Warranty',
-    shippingFrom: 'Global Warehouse (Jakarta Hub)',
-    description: `Elevate your lifestyle with the Quantum Watch Pro. \n\nEngineered for the modern professional, this titanium edition offers unparalleled durability and cutting-edge health tracking. \n\nKey Features:\n• Aerospace-grade titanium chassis\n• Always-On Retina LTPO OLED display\n• Advanced health metrics (ECG, Blood Oxygen, Temperature)\n• Precision dual-frequency GPS\n• Up to 36 hours of battery life (72 hours in Low Power Mode)\n\nExperience the future on your wrist. Seamlessly integrates with the entire Quantum Ecosystem.`
-})
+const route = useRoute()
 
 // State
+const product = ref<any>({
+    id: 1,
+    title: 'Loading...',
+    rating: 0,
+    ratingsCount: 0,
+    sold: 0,
+    priceMin: 0,
+    priceMax: 0,
+    originalPrice: 0,
+    discount: '',
+    images: ['https://via.placeholder.com/800'],
+    colors: [],
+    variants: [],
+    stock: 0,
+    category: [],
+    brand: '',
+    warranty: '',
+    shippingFrom: '',
+    description: ''
+})
+
 const activeImage = ref(0)
-const selectedColor = ref(product.value.colors[0])
-const selectedVariant = ref(product.value.variants[0])
+const selectedColor = ref('')
+const selectedVariant = ref('')
 const quantity = ref(1)
+const isLoading = ref(true)
 
 // Format currency
 const formatPrice = (price: number) => {
@@ -61,6 +58,37 @@ const formatPrice = (price: number) => {
 // Handlers
 const decreaseQty = () => { if (quantity.value > 1) quantity.value-- }
 const increaseQty = () => { if (quantity.value < product.value.stock) quantity.value++ }
+
+onMounted(async () => {
+    const id = route.params.id
+    try {
+        const res = await api.get(`/products/${id}`)
+        const data = res.data.data || res.data
+        product.value = {
+            id: data.id,
+            title: data.name,
+            rating: data.rating || 4.5,
+            ratingsCount: data.review_count || 0,
+            sold: data.sold_count || 0,
+            priceMin: data.price,
+            originalPrice: data.price * 1.2,
+            discount: '20% OFF',
+            images: [data.image_url || 'https://via.placeholder.com/800'],
+            colors: [], // Should come from variants API if available
+            variants: [], // Should come from variants API
+            stock: data.stock,
+            category: [data.category?.name || 'General'],
+            brand: 'TrendStore Brand',
+            warranty: 'Standard Warranty',
+            shippingFrom: 'Local Warehouse',
+            description: data.description || 'No description available'
+        }
+    } catch (error) {
+        console.error('Failed to load product details', error)
+    } finally {
+        isLoading.value = false
+    }
+})
 </script>
 
 <template>
