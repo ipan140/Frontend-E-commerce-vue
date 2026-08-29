@@ -25,7 +25,7 @@
               </p>
             </div>
             <div>
-              <form @submit.prevent="handleSubmit">
+              <form @submit.prevent="handleRegister">
                 <div class="space-y-5">
                   <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
                     <!-- First Name -->
@@ -174,7 +174,9 @@ import CommonGridShape from '@/components/common/CommonGridShape.vue'
 import { ref } from 'vue'
 import { RouterLink, useRouter } from 'vue-router'
 import { Store } from 'lucide-vue-next'
-import api from '@/api/axios'
+import { authService } from '@/services'
+
+const router = useRouter()
 
 const firstName = ref('')
 const lastName = ref('')
@@ -184,13 +186,12 @@ const showPassword = ref(false)
 const agreeToTerms = ref(false)
 const isLoading = ref(false)
 const errorMessage = ref('')
-const router = useRouter()
 
 const togglePasswordVisibility = () => {
   showPassword.value = !showPassword.value
 }
 
-const handleSubmit = async () => {
+const handleRegister = async () => {
   if (!agreeToTerms.value) {
     errorMessage.value = 'Please agree to the Terms and Conditions.'
     return
@@ -200,27 +201,18 @@ const handleSubmit = async () => {
   isLoading.value = true
 
   try {
-    const response = await api.post('/auth/register', {
+    await authService.postAuthRegister({
       name: `${firstName.value} ${lastName.value}`.trim(),
       email: email.value,
       password: password.value,
     })
     
-    if (response.data) {
-       // After register, you usually redirect to login or automatically log them in
-       // Assuming it might return a token straight away:
-       if (response.data.token || response.data.data?.token) {
-           const token = response.data.token || response.data.data.token;
-           localStorage.setItem('token', token)
-           localStorage.setItem('user', JSON.stringify(response.data.user || response.data.data?.user || {}))
-           router.push('/dashboard')
-       } else {
-           // Redirect to signin
-           router.push('/signin')
-       }
-    }
+    // Asumsikan backend berhasil
+    alert('Registration successful! Please sign in.')
+    router.push('/signin')
   } catch (error: any) {
-    errorMessage.value = error.response?.data?.message || 'Signup failed. Please try again.'
+    console.error(error)
+    errorMessage.value = error.response?.data?.message || error.message || 'Signup failed. Please try again.'
   } finally {
     isLoading.value = false
   }

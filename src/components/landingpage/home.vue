@@ -36,7 +36,8 @@ import ComponentCard from '../common/ComponentCard.vue'
 import Badge from '../ui/Badge.vue'
 import Nav from './utils/nav.vue'
 import Footer from './utils/footer.vue'
-import api from '@/api/axios'
+import { categoriesService, flashSaleService, productsService } from '@/services'
+import type { IcategoryCategoryResponse, IflashsaleFlashSaleResponse, ImodelsProduct } from '@/types'
 
 // Swiper logic
 const modules = [Navigation, Pagination, Autoplay]
@@ -70,7 +71,7 @@ const recommendedProducts = ref<any[]>([])
 
 const fetchCategories = async () => {
   try {
-    const res = await api.get('/categories')
+    const data = await categoriesService.getCategories() as IcategoryCategoryResponse[];
     // Fallback icon handling if DB doesn't have it or needs mapping
     const iconsMap: Record<string, any> = {
       'Elektronik': Monitor, 'Komputer & Aksesoris': Laptop, 'Handphone & Aksesoris': Smartphone,
@@ -80,7 +81,7 @@ const fetchCategories = async () => {
       'Fashion Muslim': Moon, 'Fashion Bayi & Anak': Smile, 'Ibu & Bayi': Users, 'Sepatu Wanita': Star,
       'Tas Wanita': ShoppingBag, 'Otomotif': Car
     }
-    mainCategories.value = (res.data.data || []).map((cat: any) => ({
+    mainCategories.value = (data || []).map((cat: any) => ({
       ...cat,
       icon: iconsMap[cat.name] || ShoppingBag 
     }))
@@ -91,8 +92,8 @@ const fetchCategories = async () => {
 
 const fetchFlashSales = async () => {
   try {
-    const res = await api.get('/flashsale/all') // active or all
-    flashSaleProducts.value = (res.data.data || []).slice(0, 6).map((item: any) => {
+    const data = await flashSaleService.getFlashsaleAll() as IflashsaleFlashSaleResponse[];
+    flashSaleProducts.value = (data || []).slice(0, 6).map((item: any) => {
        const product = item.product || {}
        return {
          id: item.id,
@@ -112,8 +113,8 @@ const fetchFlashSales = async () => {
 
 const fetchProducts = async () => {
   try {
-    const res = await api.get('/products')
-    recommendedProducts.value = (res.data.data || []).slice(0, 12).map((prod: any) => ({
+    const data = await productsService.getProducts() as ImodelsProduct[];
+    recommendedProducts.value = (data || []).slice(0, 12).map((prod: any) => ({
        id: prod.id,
        name: prod.name,
        price: prod.price,

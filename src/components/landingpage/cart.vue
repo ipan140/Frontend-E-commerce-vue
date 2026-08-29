@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import {
   Trash2,
   Minus,
@@ -12,57 +12,42 @@ import {
 import Nav from './utils/nav.vue'
 import Footer from './utils/footer.vue'
 import Badge from '../ui/Badge.vue'
+import { cartService } from '@/services'
 
-// --- DUMMY DATA KERANJANG ---
-const cartStores = ref([
-  {
-    storeId: 's1',
-    storeName: 'Quantum Official',
-    selected: true,
-    items: [
-      {
-        id: 1,
-        name: 'Quantum Watch Pro - Titanium Edition',
-        variant: 'Midnight Black, GPS Only',
-        price: 1200,
-        originalPrice: 2000,
-        qty: 1,
-        stock: 10,
-        image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&q=80&w=200',
-        selected: true
-      },
-      {
-        id: 2,
-        name: 'Precision Audio X1',
-        variant: 'Starlight Silver',
-        price: 249,
-        originalPrice: 399,
-        qty: 2,
-        stock: 5,
-        image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&q=80&w=200',
-        selected: true
-      }
-    ]
-  },
-  {
-    storeId: 's2',
-    storeName: 'Digital Hub Jakarta',
-    selected: false,
-    items: [
-      {
-        id: 3,
-        name: 'Studio Ergonomic Desk',
-        variant: 'Oak Wood, 120cm',
-        price: 350,
-        originalPrice: 500,
-        qty: 1,
-        stock: 3,
-        image: 'https://images.unsplash.com/photo-1518455027359-f3f816b1a20a?auto=format&fit=crop&q=80&w=200',
+const cartStores = ref<any[]>([])
+const isLoading = ref(true)
+
+const fetchCart = async () => {
+  isLoading.value = true
+  try {
+    const res = await cartService.getCart()
+    // Map backend data to frontend structure
+    cartStores.value = (res.stores || []).map((store: any) => ({
+      storeId: store.store_id,
+      storeName: store.store_name,
+      selected: false,
+      items: (store.items || []).map((item: any) => ({
+        id: item.product_id,
+        name: item.product_name,
+        variant: '-', // Fallback
+        price: item.price,
+        originalPrice: item.price, // Fallback
+        qty: item.quantity,
+        stock: 99, // Fallback
+        image: 'https://via.placeholder.com/400', // Fallback
         selected: false
-      }
-    ]
+      }))
+    }))
+  } catch (error) {
+    console.error('Failed to load cart:', error)
+  } finally {
+    isLoading.value = false
   }
-])
+}
+
+onMounted(() => {
+  fetchCart()
+})
 
 // --- LOGIKA CHECKBOX ---
 const isAllSelected = computed({
@@ -92,23 +77,28 @@ const formatPrice = (price: number) => {
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0 }).format(price)
 }
 
-const updateQty = (item: any, amount: number) => {
+const updateQty = async (item: any, amount: number) => {
   const newQty = item.qty + amount
   if (newQty >= 1 && newQty <= item.stock) {
     item.qty = newQty
-  }
-}
-
-const removeItem = (storeId: string, itemId: number) => {
-  const store = cartStores.value.find(s => s.storeId === storeId)
-  if (store) {
-    store.items = store.items.filter(i => i.id !== itemId)
-    // Hapus store jika item kosong
-    if (store.items.length === 0) {
-      cartStores.value = cartStores.value.filter(s => s.storeId !== storeId)
+    try {
+        await cartService.postCartAdd({ product_id: item.id, quantity: amount })
+    } catch (e) {
+        console.error(e)
     }
   }
 }
+
+const removeItem = async (storeId: string, itemId: string) => {
+  try {
+    await cartService.deleteCartId(itemId)
+    fetchCart() // Refresh cart after delete
+  } catch (e) {
+    console.error(e)
+  }
+}
+
+
 
 const summary = computed(() => {
   let totalItems = 0

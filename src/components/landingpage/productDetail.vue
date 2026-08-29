@@ -17,7 +17,8 @@ import { useRouter, useRoute } from 'vue-router'
 import Nav from './utils/nav.vue'
 import Footer from './utils/footer.vue'
 import Badge from '../ui/Badge.vue'
-import api from '@/api/axios'
+import { productsService, cartService } from '@/services'
+import type { ImodelsProduct } from '@/types'
 
 const router = useRouter()
 const route = useRoute()
@@ -49,6 +50,7 @@ const selectedColor = ref('')
 const selectedVariant = ref('')
 const quantity = ref(1)
 const isLoading = ref(true)
+const isAddingToCart = ref(false)
 
 // Format currency
 const formatPrice = (price: number) => {
@@ -59,11 +61,35 @@ const formatPrice = (price: number) => {
 const decreaseQty = () => { if (quantity.value > 1) quantity.value-- }
 const increaseQty = () => { if (quantity.value < product.value.stock) quantity.value++ }
 
+const addToCart = async () => {
+    const token = localStorage.getItem('token')
+    if (!token) {
+        alert('Silakan login terlebih dahulu untuk menambah ke keranjang')
+        router.push('/signin')
+        return
+    }
+
+    isAddingToCart.value = true
+    try {
+        await cartService.postCartAdd({
+            product_id: Number(product.value.id),
+            quantity: quantity.value
+        })
+        alert('Berhasil ditambahkan ke keranjang!')
+        // Dispatch storage event in case navbar wants to update cart count
+        window.dispatchEvent(new Event('cart_updated'))
+    } catch (error: any) {
+        console.error('Failed to add to cart:', error)
+        alert('Gagal menambah ke keranjang: ' + (error.response?.data?.message || error.message))
+    } finally {
+        isAddingToCart.value = false
+    }
+}
+
 onMounted(async () => {
     const id = route.params.id
     try {
-        const res = await api.get(`/products/${id}`)
-        const data = res.data.data || res.data
+        const data = await productsService.getProductsId(id as string) as ImodelsProduct;
         product.value = {
             id: data.id,
             title: data.name,
@@ -71,7 +97,7 @@ onMounted(async () => {
             ratingsCount: data.review_count || 0,
             sold: data.sold_count || 0,
             priceMin: data.price,
-            originalPrice: data.price * 1.2,
+            originalPrice: (data.price || 0) * 1.2,
             discount: '20% OFF',
             images: [data.image_url || 'https://via.placeholder.com/800'],
             colors: [], // Should come from variants API if available
@@ -248,8 +274,10 @@ onMounted(async () => {
 
                         <div class="flex flex-col sm:flex-row gap-4 mt-10">
                             <button
-                                class="flex items-center justify-center gap-3 px-8 py-4 rounded-2xl border-2 border-brand-500/20 text-brand-500 font-black text-sm uppercase tracking-widest hover:bg-brand-50 dark:hover:bg-brand-500/10 hover:border-brand-500 transition-all flex-1">
-                                <ShoppingCart :size="20" /> Add to Cart
+                                @click="addToCart"
+                                :disabled="isAddingToCart"
+                                class="flex items-center justify-center gap-3 px-8 py-4 rounded-2xl border-2 border-brand-500/20 text-brand-500 font-black text-sm uppercase tracking-widest hover:bg-brand-50 dark:hover:bg-brand-500/10 hover:border-brand-500 transition-all flex-1 disabled:opacity-50 disabled:cursor-not-allowed">
+                                <ShoppingCart :size="20" /> {{ isAddingToCart ? 'Adding...' : 'Add to Cart' }}
                             </button>
                             <button
                                 class="flex items-center justify-center px-8 py-4 rounded-2xl bg-brand-500 text-white font-black text-sm uppercase tracking-widest hover:bg-brand-600 shadow-xl shadow-brand-500/20 hover:scale-[1.02] active:scale-[0.98] transition-all flex-1">

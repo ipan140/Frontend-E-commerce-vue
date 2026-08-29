@@ -17,6 +17,31 @@ import {
   Headphones
 } from 'lucide-vue-next'
 import ThemeToggler from '../../common/ThemeToggler.vue'
+import { onMounted, onUnmounted } from 'vue'
+
+const user = ref<any>(null)
+
+const checkUser = () => {
+  const userData = localStorage.getItem('user')
+  if (userData) {
+    try {
+      user.value = JSON.parse(userData)
+    } catch (e) {
+      user.value = null
+    }
+  } else {
+    user.value = null
+  }
+}
+
+onMounted(() => {
+  checkUser()
+  window.addEventListener('storage', checkUser) // to detect login in other tabs if needed
+})
+
+onUnmounted(() => {
+  window.removeEventListener('storage', checkUser)
+})
 
 // Mobile Menu State
 const isMobileMenuOpen = ref(false)
@@ -191,13 +216,14 @@ const notifications = [
               class="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-brand-500 text-[9px] font-bold text-white ring-2 ring-white dark:ring-gray-900">3</span>
           </router-link>
 
-          <router-link to="/signin"
+          <router-link :to="user ? '/notifications' : '/signin'"
             class="hidden sm:flex items-center gap-2 pl-1 sm:pl-2 pr-1 py-1 rounded-xl transition-all hover:bg-gray-50 dark:hover:bg-white/[0.03] active:scale-95 group border border-transparent hover:border-gray-100 dark:hover:border-gray-800 shrink-0 ml-1">
             <div class="hidden md:flex flex-col items-end leading-none">
               <span
-                class="text-xs font-black uppercase text-gray-900 dark:text-white group-hover:text-brand-500 transition-colors">Sign
-                In</span>
-              <span class="text-[10px] font-bold text-gray-400 mt-0.5">Guest</span>
+                class="text-xs font-black uppercase text-gray-900 dark:text-white group-hover:text-brand-500 transition-colors">
+                {{ user ? user.name : 'Sign In' }}
+              </span>
+              <span class="text-[10px] font-bold text-gray-400 mt-0.5">{{ user ? 'Akun Saya' : 'Guest' }}</span>
             </div>
             <div
               class="h-9 w-9 md:h-10 md:w-10 flex items-center justify-center rounded-xl bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-gray-800 text-gray-400 group-hover:text-brand-500 transition-all overflow-hidden">
@@ -289,10 +315,10 @@ const notifications = [
           </nav>
 
           <div class="pt-6 pb-2 border-t border-gray-100 dark:border-gray-800">
-            <router-link to="/signin"
+            <router-link :to="user ? '/notifications' : '/signin'"
               class="flex items-center justify-center w-full py-4 rounded-xl bg-brand-500 text-white font-black uppercase tracking-widest text-sm shadow-xl shadow-brand-500/20 active:scale-95 transition-transform"
               @click="isMobileMenuOpen = false">
-              Sign In Now
+              {{ user ? 'Profil Saya' : 'Sign In Now' }}
             </router-link>
           </div>
         </div>

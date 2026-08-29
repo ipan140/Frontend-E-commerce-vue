@@ -154,47 +154,79 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
-// Tambahkan import Store dari lucide-vue-next
-import { Store } from 'lucide-vue-next'
-import CommonGridShape from '@/components/common/CommonGridShape.vue'
-import FullScreenLayout from '@/components/layout/FullScreenLayout.vue'
-import api from '@/api/axios'
-
-const email = ref('')
-const password = ref('')
-const showPassword = ref(false)
-const keepLoggedIn = ref(false)
-const isLoading = ref(false)
-const errorMessage = ref('')
-
-const router = useRouter()
-
-const togglePasswordVisibility = () => {
-  showPassword.value = !showPassword.value
-}
-
-const handleSubmit = async () => {
-  errorMessage.value = ''
-  isLoading.value = true
-  try {
-    const response = await api.post('/auth/login', {
-      email: email.value,
-      password: password.value,
-    })
-    if (response.data && (response.data.token || response.data.data?.token)) {
-      const token = response.data.token || response.data.data.token;
-      localStorage.setItem('token', token)
-      localStorage.setItem('user', JSON.stringify(response.data.user || response.data.data?.user || {}))
-      router.push('/dashboard')
-    } else {
-      errorMessage.value = 'Failed to get auth token'
-    }
-  } catch (error: any) {
-    errorMessage.value = error.response?.data?.message || 'Login failed. Please try again.'
-  } finally {
-    isLoading.value = false
+  import FullScreenLayout from '@/components/layout/FullScreenLayout.vue'
+  import CommonGridShape from '@/components/common/CommonGridShape.vue'
+  import { ref } from 'vue'
+  import { RouterLink, useRouter } from 'vue-router'
+  import { Store } from 'lucide-vue-next'
+  import { authService } from '@/services'
+  
+  const email = ref('')
+  const password = ref('')
+  const showPassword = ref(false)
+  const keepLoggedIn = ref(false)
+  const errorMessage = ref('')
+  const isLoading = ref(false)
+  const router = useRouter()
+  
+  const togglePasswordVisibility = () => {
+    showPassword.value = !showPassword.value
   }
-}
+  
+  const handleSubmit = async () => {
+    errorMessage.value = ''
+    isLoading.value = true
+    try {
+      let response;
+      let isAdmin = false;
+      
+      try {
+        // Try user login first
+        response = await authService.postAuthLogin({
+          email: email.value,
+          password: password.value,
+        })
+      } catch (err: any) {
+        // If user login fails, try admin login
+        response = await authService.postAuthLoginAdmin({
+          email: email.value,
+          password: password.value,
+        })
+        isAdmin = true
+      }
+      
+      if (typeof response === 'string' && response.split('.').length === 3) {
+        const token = response
+        localStorage.setItem('token', token)
+        
+        // Decode JWT payload to get user info
+        const payloadStr = atob(token.split('.')[1])
+        const jwtData = JSON.parse(payloadStr)
+        
+        const userData = {
+          id: jwtData.user_id,
+          role: isAdmin ? 'admin' : (jwtData.role || 'user'),
+          email: email.value,
+          name: email.value.split('@')[0]
+        }
+        
+        localStorage.setItem('user', JSON.stringify(userData))
+        
+        // Dispatch storage event manually so nav updates immediately in same tab
+        window.dispatchEvent(new Event('storage'))
+        
+        if (isAdmin) {
+          router.push('/dashboard') // Admin dashboard
+        } else {
+          router.push('/') // User home
+        }
+      } else {
+        errorMessage.value = 'Failed to get auth token'
+      }
+    } catch (error: any) {
+      errorMessage.value = error.response?.data?.message || error.message || 'Login failed. Please try again.'
+    } finally {
+      isLoading.value = false
+    }
+  }
 </script>
